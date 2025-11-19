@@ -1,0 +1,16 @@
+{
+    "name": {
+        "common": "Syria",
+        "official": "Syrian Arab Republic",
+        "nativeName": {
+            "ara": {
+                "official": "الجمهورية العربية السورية",
+                "common": "سوريا"
+            }
+        }
+    },
+    "capital": [
+        "Damascus"
+    ],
+    "region": "Asia"
+}
