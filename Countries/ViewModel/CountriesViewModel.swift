@@ -8,6 +8,7 @@
 import Foundation
 
 @Observable
+@MainActor
 class CountriesViewModel {
     var countries: [Country] = []
     var isLoading = false
@@ -15,7 +16,6 @@ class CountriesViewModel {
     
     private let fetchService = FetchService()
     
-    @MainActor
     func loadCountries() async {
         isLoading = true
         errorMessage = nil
