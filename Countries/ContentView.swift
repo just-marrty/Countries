@@ -8,55 +8,63 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var viewModel = CountriesViewModel()
+    
+    @AppStorage("isDarkOn") private var isDarkOn: Bool = false
+    
+    @State private var vm = CountryListViewModel(fetchService: FetchService())
+    
+    @State private var searchText: String = ""
     
     var body: some View {
-        NavigationStack {
-            Group {
-                if viewModel.isLoading {
-                    ProgressView("Loading...")
-                } else if let error = viewModel.errorMessage {
-                    VStack {
-                        Text("Error")
-                            .font(.headline)
-                        Text(error)
-                            .foregroundColor(.secondary)
-                        Button("Try again") {
-                            Task {
-                                await viewModel.loadCountries()
-                            }
+        Group {
+            if vm.isLoading {
+                ProgressView("Loading...")
+            } else if let errorMessage = vm.errorMessage {
+                VStack {
+                    Text("Error")
+                        .font(.headline)
+                    Text(errorMessage)
+                        .foregroundColor(.secondary)
+                    Button("Try again") {
+                        Task {
+                            await vm.loadCountries()
                         }
-                    }
-                } else {
-                    List(viewModel.countries, id: \.name) { country in
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text(country.name)
-                                .font(.headline)
-                            Text(country.officialName) 
-                                .font(.subheadline)
-                                .foregroundColor(.secondary)
-                            if let nativeName = country.nativeName?["ara"] {
-                                Text("Native name: \(nativeName.common)")
-                                    .font(.subheadline)
-                                    .foregroundColor(.secondary)
-                            }
-                            if let capital = country.capital?.first {
-                                Text("Capital city: \(capital)")
-                                    .font(.caption)
-                                    .foregroundColor(.secondary)
-                            }
-                            Text("Region: \(country.region)")
-                                .font(.caption)
-                                .foregroundColor(.secondary)
-                        }
-                        .padding(.vertical, 4)
                     }
                 }
+            } else {
+                NavigationStack {
+                    List(vm.search(for: searchText)) { country in
+                        VStack(alignment: .leading, spacing: 5) {
+                            Text(country.nameCommon)
+                                .font(.system(size: 18))
+                                .bold()
+                            
+                            Text("Official name: \(country.nameOfficial)")
+                                .font(.subheadline)
+                            
+                            Text("Region: \(country.region)")
+                                .font(.subheadline)
+                        }
+                    }
+                    .navigationTitle("Countries")
+                    .toolbarBackgroundVisibility(.visible, for: .navigationBar)
+                    .navigationBarItems(trailing: Button(action: {
+                        isDarkOn.toggle()
+                    }, label: {
+                        Image(systemName: isDarkOn ? "moon.fill" : "sun.max.fill")
+                            .foregroundStyle(isDarkOn ? .white : .black)
+                    }))
+                    .listStyle(.plain)
+                    .searchable(text: $searchText, prompt: "Search country")
+                    .animation(.default, value: searchText)
+                    .scrollIndicators(.hidden)
+                }
             }
-            .navigationTitle("Countries")
-            .task {
-                await viewModel.loadCountries()
-            }
+        }
+        .preferredColorScheme(isDarkOn ? .dark : .light)
+        .tint(isDarkOn ? .white : .primary)
+        .task {
+            await vm.loadCountries()
         }
     }
 }

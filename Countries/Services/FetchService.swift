@@ -27,9 +27,15 @@ struct FetchService {
             throw FetchError.badResponse
         }
         
-        let decoder = JSONDecoder()
-        return try decoder.decode([Country].self, from: data)
+        if let jsonString = String(data: data, encoding: .utf8) {
+            print("Raw JSON")
+            print(jsonString.prefix(500))
+        }
+        do {
+            return try JSONDecoder().decode([Country].self, from: data)
+        } catch {
+            print("Decoding error: \(error)")
+            throw error
+        }
     }
-    
-    
 }
