@@ -12,10 +12,10 @@ A SwiftUI application for displaying a list of countries using modern Swift tech
 
 The project uses **MVVM (Model-View-ViewModel)** architecture:
 
-- **Model**: `Country` - data model for representing a country
+- **Models**: `Country` - data model for representing a country
 - **View**: `ContentView` - SwiftUI view for displaying data
-- **ViewModel**: `CountriesViewModel` - business logic and application state
-- **Service**: `FetchService` - service for API communication
+- **ViewModels**: `CountryListViewModel` - business logic and application state
+- **Services**: `FetchService` - service for API communication
 
 ## Technologies
 
