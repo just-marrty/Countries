@@ -1,5 +1,5 @@
 //
-//  CountriesViewModel.swift
+//  CountryListViewModel.swift
 //  Countries
 //
 //  Created by Martin Hrbáček on 19.11.2025.
